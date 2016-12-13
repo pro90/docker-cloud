@@ -1,0 +1,43 @@
+version: '2'
+services:
+  db:
+    image: mysql:5.6
+    volumes_from:
+     - container:mysql_data
+    container_name: mysql
+
+  php:
+    image: php5-fpm:custom
+    links:
+     - db:mysql
+    volumes:
+     - /var/www:/var/www
+    depends_on:
+     - "db"
+    container_name: myphp
+
+  nginx:
+    image: nginx:custom
+    links:
+     - php:phpfpm
+     - samba
+    volumes:
+     - /var/www:/var/www
+    ports:
+     - "80:80"
+     - "443:443"
+    depends_on:
+     - "php"
+     - "samba"
+    container_name: mynginx
+
+  samba:
+    image: samba:custom
+    volumes:
+     - /var/www/samba/public:/home/public
+    ports:
+     - "445:445"
+     - "137:137"
+     - "138:138"
+     - "139:139" 
+    container_name: mysamba
