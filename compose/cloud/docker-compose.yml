@@ -23,6 +23,8 @@ services:
      - samba
     volumes:
      - /var/www:/var/www
+    volumes_from:
+     - container:letsencrypt_data
     ports:
      - "80:80"
      - "443:443"
